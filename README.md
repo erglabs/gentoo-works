@@ -1,1 +1,2 @@
-# gentoo-works
+# install gentoo
+## batteries included ^.^

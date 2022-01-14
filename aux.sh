@@ -30,7 +30,7 @@ function ynquestion()
     while true ; do
         # version echoing choice:
         # read -s -n 1 -rep "$(_:gclred) [Y]es/[N]o $(_:gcreset)" -p $'\n'
-        read -s -n 1 -rp "[Y]es/[N]o" -p $'\n'
+        read -s -n 1 -rep "[Y]es/[N]o" -p $'\n'
         if [[ ${REPLY} =~ ^[Yy]$ ]] ; then
             return 0
             break

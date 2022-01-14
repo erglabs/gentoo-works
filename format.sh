@@ -46,7 +46,7 @@ fi
 
 # then
 #   echo "what you provided does not look like block device (which is the default)"
-#   if ! ynquestion "are you sure you wnat to proceed ?" 
+#   if ! ynquestion "are you sure you wnat to proceed ?"
 #   then
 #     echo "okay, bye then!"
 #     exit -1
@@ -63,14 +63,24 @@ fi
 # optional:
 # wipefs ${1}
 
-if grep -in "/dev/mapper/ecroot" /proc/mounts &>/dev/null ; 
-then 
+if [[ -b /dev/mapper/ecroot ]]
+then
   echo "/dev/mapper/ecroot is busy, release it and retry"
-  exit -1
+  if ynquestion "do it automatically and proceed?"
+  then
+    if grep -in "${1}2" /proc/mounts &>/dev/null
+    then
+        umount ${1}2
+    fi
+    cryptsetup close /dev/mapper/ecroot
+  else
+    echo "okay, not doing it then!"
+    exit -1
+  fi
 fi
 
-if grep -in "${1}" /proc/mounts &>/dev/null ; 
-then 
+if grep -in "${1}" /proc/mounts &>/dev/null
+then
   echo "device pointed at (${1}) is busy, release it and retry"
   exit -1
 fi
@@ -97,6 +107,10 @@ printf '%s\n' "$DEFAULT_LUKS_PASSWORD" "$DEFAULT_LUKS_PASSWORD" | sudo cryptsetu
 mkfs.btrfs -f /dev/mapper/ecroot
 
 # mounting as user
+if [[ ! -d ${SCRIPT_ROOT_DIR}/workarea ]] 
+then
+    mkdir ${SCRIPT_ROOT_DIR}/workarea
+fi
 mount -o uid=1000,gid=1000 /dev/mapper/ecroot ${SCRIPT_ROOT_DIR}/workarea
 mkdir -p ${SCRIPT_ROOT_DIR}/workarea/boot
 

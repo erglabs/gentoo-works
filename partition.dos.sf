@@ -1,0 +1,9 @@
+label: dos
+label-id: 0x69264115
+device: asdf
+unit: sectors
+sector-size: 512
+
+
+x1 : start=        2048, size=       2097152, type=83
+x2 : type=83
